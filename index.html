@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vetted Cuts — Account & Profile</title>
+  <script src="https://jsdelivr.net"></script>
+  <style>
+    :root { --bg: #ffffff; --surface: #fafafa; --surface-hover: #f3f4f6; --text-main: #000000; --text-muted: #6b7280; --border: #e5e7eb; --accent-blue: #2563eb; --dark-btn: #111111; --radius-pill: 9999px; --radius-card: 24px; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text-main); -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; padding-top: 84px; }
+    .vetted-navbar-header-beta { position: fixed; top: 0; left: 0 !important; right: 0 !important; width: 100% !important; background-color: #FFFFFF; border-bottom: none !important; z-index: 9999; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-sizing: border-box; transform: translateY(0); }
+    .vetted-navbar-header-beta.nav-hidden-beta { transform: translateY(-100%) !important; }
+    .vetted-navbar-inner-beta { width: 100%; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; box-sizing: border-box; }
+    .vetted-navbar-logo-link-beta { display: inline-flex; align-items: center; text-decoration: none; line-height: 0; transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1); }
+    .vetted-navbar-logo-link-beta:hover { transform: scale(1.05); }
+    .vetted-navbar-logo-link-beta svg { display: block; }
+    .vetted-navbar-trigger-beta { background: transparent; border: none; cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 6px; z-index: 10001; }
+    .vetted-trigger-line-beta { width: 22px; height: 2px; background-color: #000000; transition: transform 0.2s ease, opacity 0.2s ease; }
+    .vetted-navbar-trigger-beta.menu-active-beta .vetted-trigger-line-beta:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .vetted-navbar-trigger-beta.menu-active-beta .vetted-trigger-line-beta:nth-child(2) { opacity: 0; }
+    .vetted-navbar-trigger-beta.menu-active-beta .vetted-trigger-line-beta:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .vetted-menu-workspace-overlay-beta { position: fixed; top: 0; left: 0 !important; right: 0 !important; width: 100% !important; height: 100vh; background-color: #FFFFFF; z-index: 9998; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease; }
+    .vetted-menu-workspace-overlay-beta.workspace-open-beta { opacity: 1; visibility: visible; }
+    .vetted-menu-workspace-inner-beta { position: absolute; top: 0; left: 0 !important; right: 0 !important; width: 100% !important; height: 100vh !important; background-color: #FFFFFF; padding: 100px 24px 40px 24px; transform: translateY(-100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; justify-content: flex-start; box-sizing: border-box; overflow-y: auto; }
+    .vetted-menu-workspace-overlay-beta.workspace-open-beta .vetted-menu-workspace-inner-beta { transform: translateY(0); }
+    .vetted-menu-workspace-links-beta { display: flex; flex-direction: column; width: 100%; max-width: 1200px; margin: 20px auto 0 auto; }
+    .vetted-menu-group-beta { border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+    .vetted-menu-workspace-row-beta { width: 100%; background: transparent; border: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 22px 4px; text-align: left; color: #000000; }
+    .vetted-menu-row-label-beta { font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; color: #000000; }
+    .vetted-menu-row-plus-beta { font-size: 1.6rem; font-weight: 300; line-height: 1; color: #000000; transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1); display: inline-block; }
+    .vetted-menu-group-beta.group-open-beta .vetted-menu-row-plus-beta { transform: rotate(45deg); }
+    .vetted-menu-sublist-beta { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.25, 1, 0.5, 1), padding 0.3s ease; display: flex; flex-direction: column; padding: 0 8px; }
+    .vetted-menu-group-beta.group-open-beta .vetted-menu-sublist-beta { max-height: 300px; padding-bottom: 18px; }
+    .vetted-menu-sublink-beta { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; text-decoration: none; font-size: 1.05rem; font-weight: 500; color: #4B5563; transition: color 0.15s ease, transform 0.15s ease; }
+    .vetted-menu-sublink-beta:hover { color: #000000; transform: translateX(4px); }
+    .vetted-sub-arrow-beta { font-size: 1rem; color: #9CA3AF; transition: color 0.15s ease; }
+    .vetted-menu-sublink-beta:hover .vetted-sub-arrow-beta { color: #000000; }
+    .vetted-menu-login-wrap-beta { margin-top: 28px; padding-left: 4px; display: flex; justify-content: flex-start; }
+    .vetted-menu-login-btn-beta { display: inline-flex; align-items: center; gap: 6px; width: fit-content; padding: 12px 24px; background-color: #111111; color: #FFFFFF; border-radius: 9999px; font-size: 0.95rem; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: var(--radius-pill); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: 1px solid var(--border); background: #fff; color: var(--text-main); text-decoration: none; }
+    .btn:hover { background: var(--surface-hover); }
+    .btn-dark { background: var(--dark-btn); color: #fff; border-color: var(--dark-btn); }
+    .btn-dark:hover { background: #262626; }
+    .btn-full { width: 100%; padding: 14px 24px; font-size: 15px; }
+    .auth-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 20px 64px; }
+    .auth-card { width: 100%; max-width: 440px; border: 1px solid var(--border); border-radius: var(--radius-card); padding: 36px 28px; background: #fff; box-shadow: 0 12px 32px rgba(0,0,0,0.03); }
+    .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-blue); margin-bottom: 10px; display: block; }
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 8px; }
+    .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+    .role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+    .role-tab { border: 1px solid var(--border); border-radius: 14px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .role-tab.active { border-color: var(--dark-btn); background: var(--surface); font-weight: 600; }
+    .form-field { margin-bottom: 16px; }
+    .form-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; background: #fff; color: var(--text-main); }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: var(--dark-btn); }
+    .link-row { display: flex; justify-content: flex-end; margin-top: -8px; margin-bottom: 18px; }
+    .text-link { font-size: 13px; color: var(--text-muted); text-decoration: underline; cursor: pointer; background: none; border: none; }
+    .status-text { font-size: 13px; text-align: center; margin-top: 14px; min-height: 20px; }
+    .profile-wrapper { max-width: 960px; width: 100%; margin: 0 auto; padding: 24px 24px 80px; }
+    .profile-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 28px; margin-top: 28px; }
+    @media (max-width: 768px) { .profile-grid { grid-template-columns: 1fr; } }
+    .panel { border: 1px solid var(--border); border-radius: var(--radius-card); padding: 28px; background: #fff; }
+    .avatar-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--dark-btn); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; margin-bottom: 16px; }
+    .badge-pill { display: inline-flex; align-items: center; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-pill); background: #eff6ff; color: var(--accent-blue); margin-bottom: 14px; }
+    .meta-row { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--border); font-size: 13px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<header id="vettedNavSystem-beta" class="vetted-navbar-header-beta">
+<div class="vetted-navbar-inner-beta">
+<a href="https://carrd.co" class="vetted-navbar-logo-link-beta" aria-label="Vetted Cuts Home">
+<svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://w3.org">
+<defs>
+<linearGradient id="vc-nav-teal" x1="13" y1="8" x2="34" y2="75" gradientUnits="userSpaceOnUse">
+<stop offset="0%" stop-color="#68C3B3"/><stop offset="48%" stop-color="#439692"/><stop offset="100%" stop-color="#1E5C64"/>
+</linearGradient>
+<linearGradient id="vc-nav-blue" x1="58" y1="24" x2="15" y2="96" gradientUnits="userSpaceOnUse">
+<stop offset="0%" stop-color="#23559C"/><stop offset="50%" stop-color="#153B73"/><stop offset="100%" stop-color="#0B244E"/>
+</linearGradient>
+<linearGradient id="vc-nav-purple" x1="91" y1="48" x2="28" y2="95" gradientUnits="userSpaceOnUse">
+<stop offset="0%" stop-color="#7949B8"/><stop offset="50%" stop-color="#58308E"/><stop offset="100%" stop-color="#34175E"/>
+</linearGradient>
+<linearGradient id="vc-nav-sheen" x1="15" y1="10" x2="85" y2="85" gradientUnits="userSpaceOnUse">
+<stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.08"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity="0.0"/><stop offset="100%" stop-color="#000000" stop-opacity="0.14"/>
+</linearGradient>
+</defs>
+<path d="M13 13.5C13 9.4 17.4 6.9 20.9 8.9L36.5 17.9L13 75.5V13.5Z" fill="url(#vc-nav-teal)"/>
+<path d="M13 13.5C13 9.4 17.4 6.9 20.9 8.9L36.5 17.9L13 75.5V13.5Z" fill="url(#vc-nav-sheen)"/>
+<path d="M43.2 21.8L61.2 32.2L20.4 94.6C18.2 97.9 13 96.3 13 92.3C13 91.2 13.3 90.1 13.8 89.1L43.2 21.8Z" fill="url(#vc-nav-blue)"/>
+<path d="M43.2 21.8L61.2 32.2L20.4 94.6C18.2 97.9 13 96.3 13 92.3C13 91.2 13.3 90.1 13.8 89.1L43.2 21.8Z" fill="url(#vc-nav-sheen)"/>
+<path d="M67.8 36L88.8 48.1C93.2 50.6 93.2 57 88.8 59.5L26.2 95.6L67.8 36Z" fill="url(#vc-nav-purple)"/>
+<path d="M67.8 36L88.8 48.1C93.2 50.6 93.2 57 88.8 59.5L26.2 95.6L67.8 36Z" fill="url(#vc-nav-sheen)"/>
+</svg>
+</a>
+<button id="vettedNavTrigger-beta" class="vetted-navbar-trigger-beta" aria-label="Toggle Navigation">
+<span class="vetted-trigger-line-beta"></span><span class="vetted-trigger-line-beta"></span><span class="vetted-trigger-line-beta"></span>
+</button>
+</div>
+</header>
+
+<div id="vettedNavWorkspace-beta" class="vetted-menu-workspace-overlay-beta">
+<div class="vetted-menu-workspace-inner-beta">
+<nav class="vetted-menu-workspace-links-beta">
+  <div class="vetted-menu-group-beta">
+    <button type="button" class="vetted-menu-workspace-row-beta"><span class="vetted-menu-row-label-beta">Research</span><span class="vetted-menu-row-plus-beta">+</span></button>
+    <div class="vetted-menu-sublist-beta">
+      <a href="https://carrd.co#industry-ecosystem" class="vetted-menu-sublink-beta"><span>Industry Ecosystem</span><span class="vetted-sub-arrow-beta">→</span></a>
+      <a href="https://carrd.co#enterprise-scoping" class="vetted-menu-sublink-beta"><span>Enterprise Scoping</span><span class="vetted-sub-arrow-beta">→</span></a>
+      <a href="https://carrd.co#services" class="vetted-menu-sublink-beta"><span>Services</span><span class="vetted-sub-arrow-beta">→</span></a>
+    </div>
+  </div>
+  <div class="vetted-menu-group-beta">
+    <button type="button" class="vetted-menu-workspace-row-beta"><span class="vetted-menu-row-label-beta">Editors</span><span class="vetted-menu-row-plus-beta">+</span></button>
+    <div class="vetted-menu-sublist-beta">
+      <a href="https://carrd.co#apply" class="vetted-menu-sublink-beta"><span>Apply</span><span class="vetted-sub-arrow-beta">→</span></a>
+      <a href="https://carrd.co#vetting-system" class="vetted-menu-sublink-beta"><span>Vetting System</span><span class="vetted-sub-arrow-beta">→</span></a>
+    </div>
+  </div>
+  <div class="vetted-menu-group-beta">
+    <button type="button" class="vetted-menu-workspace-row-beta"><span class="vetted-menu-row-label-beta">Enterprise</span><span class="vetted-menu-row-plus-beta">+</span></button>
+    <div class="vetted-menu-sublist-beta">
+      <a href="https://carrd.co#production-brief" class="vetted-menu-sublink-beta"><span>Production Brief</span><span class="vetted-sub-arrow-beta">→</span></a>
+      <a href="https://carrd.co#scale-infrastructure" class="vetted-menu-sublink-beta"><span>Scale Infrastructure</span><span class="vetted-sub-arrow-beta">→</span></a>
+      <a href="https://carrd.co#deploy-nodes" class="vetted-menu-sublink-beta"><span>Deploy Nodes</span><span class="vetted-sub-arrow-beta">→</span></a>
+    </div>
+  </div>
+  <div class="vetted-menu-group-beta">
+    <button type="button" class="vetted-menu-workspace-row-beta"><span class="vetted-menu-row-label-beta">Company</span><span class="vetted-menu-row-plus-beta">+</span></button>
+    <div class="vetted-menu-sublist-beta">
+      <a href="https://carrd.co#mission" class="vetted-menu-sublink-beta"><span>Mission</span><span class="vetted-sub-arrow-beta">→</span></a>
+      <a href="https://carrd.co#security" class="vetted-menu-sublink-beta"><span>Security</span><span class="vetted-sub-arrow-beta">→</span></a>
+    </div>
+  </div>
+  <div class="vetted-menu-login-wrap-beta">
+    <a href="https://carrd.co" class="vetted-menu-login-btn-beta">← Main Site</a>
+  </div>
+</nav>
+</div>
+</div>
+
+<main id="auth-view" class="auth-wrapper">
+  <div class="auth-card">
+    <span class="eyebrow">NETWORK ACCESS</span>
+    <h1 id="auth-title">Sign in to Vetted Cuts</h1>
+    <p class="subtitle" id="auth-subtitle">Access your talent profile, vetting status, or enterprise production nodes.</p>
+    <div id="role-selector-wrap" class="hidden">
+      <div class="role-selector">
+        <div class="role-tab active" id="tab-editor" onclick="setRole('Creative Editor')"><div style="font-size:13px;">Creative Editor</div><div style="font-size:11px; color:var(--text-muted);">$55 – $125/hr</div></div>
+        <div class="role-tab" id="tab-client" onclick="setRole('Enterprise Client')"><div style="font-size:13px;">Brand / Studio</div><div style="font-size:11px; color:var(--text-muted);">Scale Content</div></div>
+      </div>
+    </div>
+    <div class="form-field"><label>Email Address</label><input type="email" id="email" placeholder="you@domain.com"></div>
+    <div class="form-field" id="password-field-wrap"><label>Password</label><input type="password" id="password" placeholder="••••••••"></div>
+    <div class="link-row" id="forgot-link-wrap"><button type="button" class="text-link" onclick="switchMode('reset')">Forgot password?</button></div>
+    <button class="btn btn-dark btn-full" id="primary-btn" onclick="handleAuthSubmit()">Sign In →</button>
+    <button class="btn btn-full" style="margin-top: 10px;" id="switch-mode-btn" onclick="toggleLoginSignup()">New to Vetted Cuts? Create Account</button>
+    <div class="status-text" id="auth-status"></div>
+  </div>
+</main>
+
+<section id="profile-view" class="profile-wrapper hidden">
+  <span class="eyebrow">VETTED CUTS • MEMBER CONSOLE</span>
+  <h1>Account & Vetting Profile</h1>
+  <p class="subtitle" style="margin-bottom: 0;">Manage your credentials, portfolio reel, and production availability.</p>
+  <div class="profile-grid">
+    <div class="panel">
+      <div class="avatar-circle" id="avatar-initials">VC</div>
+      <div class="badge-pill" id="badge-role">Creative Editor</div>
+      <h3 style="font-size: 18px; margin-bottom: 4px;" id="display-name">Member</h3>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;" id="display-email">email@domain.com</p>
+      <div class="meta-row"><span style="color:var(--text-muted);">Vetting Status</span><span style="font-weight:600; color:#d97706;">Pending Review</span></div>
+      <div class="meta-row"><span style="color:var(--text-muted);">SLA Network Tier</span><span style="font-weight:600;">31.4h Standard</span></div>
+      <div class="meta-row"><span style="color:var(--text-muted);">Member ID</span><span style="font-family:monospace;" id="display-id">#VC-0000</span></div>
+      <button class="btn btn-full" style="margin-top: 24px; color: #dc2626; border-color: #fecaca;" onclick="handleLogout()">Sign Out</button>
+    </div>
+    <div class="panel">
+      <h3 style="font-size: 17px; margin-bottom: 18px;">Profile & Vetting Details</h3>
+      <div class="form-field"><label>Full Name / Studio Name</label><input type="text" id="prof-name" placeholder="Enter your full name or studio"></div>
+      <div class="form-field"><label>Primary Role / Track</label><select id="prof-specialty"><option value="Short-Form Retention Editor">Short-Form Retention Editor ($55 - $110/hr)</option><option value="Direct-Response Ad Editor">Direct-Response Ad Editor ($65 - $125/hr)</option><option value="Long-Form YouTube & Creator Editor">Long-Form YouTube & Creator Editor ($60 - $115/hr)</option><option value="Enterprise Brand / Agency Partner">Enterprise Brand / Agency Partner</option></select></div>
+      <div class="form-field"><label>Portfolio Reel / Frame.io / Website URL</label><input type="url" id="prof-portfolio" placeholder="https://frame.io"></div>
+      <div class="form-field"><label>Target Hourly Rate ($ USD) or Monthly Asset Volume</label><input type="text" id="prof-rate" placeholder="e.g. $85/hr or 30 assets/month"></div>
+      <div class="form-field"><label>Software Stack & Notes</label><textarea id="prof-bio" rows="3" placeholder="List your editing software or production needs..."></textarea></div>
+      <button class="btn btn-dark btn-full" onclick="saveProfile()">Save Profile Changes</button>
+      <div class="status-text" id="profile-status"></div>
+    </div>
+  </div>
+</section>
+<script>
+  const SUPABASE_URL = 'https://supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_RRgbIQxzz69_f1CJrl03cA_kS-vyo2c';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  (function() {
+    let lastScrollY = window.scrollY;
+    const trigger = document.getElementById('vettedNavTrigger-beta');
+    const overlay = document.getElementById('vettedNavWorkspace-beta');
+    const header = document.getElementById('vettedNavSystem-beta');
+    const groups = document.querySelectorAll('.vetted-menu-group-beta');
+
+    trigger.addEventListener('click', () => {
+      trigger.classList.toggle('menu-active-beta');
+      overlay.classList.toggle('workspace-open-beta');
+    });
+
+    groups.forEach(group => {
+      const rowBtn = group.querySelector('.vetted-menu-workspace-row-beta');
+      rowBtn.addEventListener('click', () => {
+        const isOpen = group.classList.contains('group-open-beta');
+        groups.forEach(g => g.classList.remove('group-open-beta'));
+        if (!isOpen) group.classList.add('group-open-beta');
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      if (overlay.classList.contains('workspace-open-beta')) return;
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        header.classList.add('nav-hidden-beta');
+      } else {
+        header.classList.remove('nav-hidden-beta');
+      }
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+  })();
+
+  let mode = 'login';
+  let selectedRole = 'Creative Editor';
+
+  function setRole(role) {
+    selectedRole = role;
+    document.getElementById('tab-editor').classList.toggle('active', role === 'Creative Editor');
+    document.getElementById('tab-client').classList.toggle('active', role === 'Enterprise Client');
+  }
+
+  function toggleLoginSignup() {
+    switchMode(mode === 'login' ? 'signup' : 'login');
+  }
+
+  function switchMode(newMode) {
+    mode = newMode;
+    document.getElementById('auth-status').innerText = '';
+    const roleWrap = document.getElementById('role-selector-wrap');
+    const passWrap = document.getElementById('password-field-wrap');
+    const forgotWrap = document.getElementById('forgot-link-wrap');
+    const title = document.getElementById('auth-title');
+    const sub = document.getElementById('auth-subtitle');
+    const primaryBtn = document.getElementById('primary-btn');
+    const switchBtn = document.getElementById('switch-mode-btn');
+
+    if (mode === 'login') {
+      roleWrap.classList.add('hidden'); passWrap.classList.remove('hidden'); forgotWrap.classList.remove('hidden');
+      title.innerText = 'Sign in to Vetted Cuts'; sub.innerText = 'Access your talent profile, vetting status, or enterprise production nodes.';
+      primaryBtn.innerText = 'Sign In →'; switchBtn.innerText = 'New to Vetted Cuts? Create Account';
+    } else if (mode === 'signup') {
+      roleWrap.classList.remove('hidden'); passWrap.classList.remove('hidden'); forgotWrap.classList.add('hidden');
+      title.innerText = 'Create Vetted Cuts Account'; sub.innerText = 'Apply to the creative talent pool or onboard your brand to deploy nodes.';
+      primaryBtn.innerText = 'Create Account →'; switchBtn.innerText = 'Already have an account? Sign In';
+    } else if (mode === 'reset') {
+      roleWrap.classList.add('hidden'); passWrap.classList.add('hidden'); forgotWrap.classList.add('hidden');
+      title.innerText = 'Reset Password'; sub.innerText = 'Enter your email address and we will send you a password recovery link.';
+      primaryBtn.innerText = 'Send Reset Link →'; switchBtn.innerText = '← Back to Sign In';
+    }
+  }
+
+  async function handleAuthSubmit() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const status = document.getElementById('auth-status');
+
+    if (!email) { status.style.color = '#dc2626'; status.innerText = 'Please enter your email address.'; return; }
+    status.style.color = '#2563eb';
+
+    if (mode === 'reset') {
+      status.innerText = 'Sending recovery link...';
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+      if (error) { status.style.color = '#dc2626'; status.innerText = error.message; }
+      else { status.style.color = '#16a34a'; status.innerText = 'Check your email inbox for the password reset link.'; }
+      return;
+    }
+
+    if (!password || password.length < 6) { status.style.color = '#dc2626'; status.innerText = 'Please enter a password (at least 6 characters).'; return; }
+
+    if (mode === 'signup') {
+      status.innerText = 'Creating your account...';
+      const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { role: selectedRole } } });
+      if (error) { status.style.color = '#dc2626'; status.innerText = error.message; }
+      else if (data.user) { openProfile(data.user); }
+    } else {
+      status.innerText = 'Signing in...';
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) { status.style.color = '#dc2626'; status.innerText = error.message; }
+      else if (data.user) { openProfile(data.user); }
+    }
+  }
+
+  function openProfile(user) {
+    document.getElementById('auth-view').classList.add('hidden');
+    document.getElementById('profile-view').classList.remove('hidden');
+    const meta = user.user_metadata || {};
+    const displayName = meta.full_name || user.email.split('@');
+
+    document.getElementById('display-name').innerText = displayName;
+    document.getElementById('display-email').innerText = user.email;
+    document.getElementById('badge-role').innerText = meta.role || 'Creative Editor';
+    document.getElementById('avatar-initials').innerText = displayName.slice(0, 2).toUpperCase();
+    document.getElementById('display-id').innerText = '#VC-' + user.id.slice(0, 4).toUpperCase();
+
+    document.getElementById('prof-name').value = meta.full_name || '';
+    if (meta.specialty) document.getElementById('prof-specialty').value = meta.specialty;
+    document.getElementById('prof-portfolio').value = meta.portfolio || '';
+    document.getElementById('prof-rate').value = meta.rate || '';
+    document.getElementById('prof-bio').value = meta.bio || '';
+  }
+
+  async function saveProfile() {
+    const status = document.getElementById('profile-status');
+    status.style.color = '#2563eb'; status.innerText = 'Saving changes...';
+    const fullName = document.getElementById('prof-name').value.trim();
+    const specialty = document.getElementById('prof-specialty').value;
+    const portfolio = document.getElementById('prof-portfolio').value.trim();
+    const rate = document.getElementById('prof-rate').value.trim();
+    const bio = document.getElementById('prof-bio').value.trim();
+
+    const { error } = await supabaseClient.auth.updateUser({ data: { full_name: fullName, specialty, portfolio, rate, bio } });
+    if (error) { status.style.color = '#dc2626'; status.innerText = error.message; }
+    else {
+      if (fullName) {
+        document.getElementById('display-name').innerText = fullName;
+        document.getElementById('avatar-initials').innerText = fullName.slice(0, 2).toUpperCase();
+      }
+      status.style.color = '#16a34a'; status.innerText = 'Profile updated and saved!';
+    }
+  }
+
+  async function handleLogout() {
+    await supabaseClient.auth.signOut();
+    document.getElementById('profile-view').classList.add('hidden');
+    document.getElementById('auth-view').classList.remove('hidden');
+    switchMode('login');
+  }
+
+  (async () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'signup') switchMode('signup');
+    if (params.get('role') === 'client') setRole('Enterprise Client');
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (user) openProfile(user);
+  })();
+</script>
+</body>
+</html>
